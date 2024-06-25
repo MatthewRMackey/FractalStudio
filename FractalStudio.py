@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
 
 
     def build_display_panel(self):
-        self.display_panel = FractalGrid(self.display_panel_width, self.display_panel_height)
+        self.display_panel = FractalGrid(self.display_panel_width-42, self.display_panel_height-40)
 
 
 ############################## TEMPORARY #############################################
