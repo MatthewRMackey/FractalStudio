@@ -10,17 +10,15 @@ from MandelbrotWidget import MandelbrotWidget
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, win_height=1000, win_width=1800):
+    def __init__(self, win_height=400, win_width=600):
         super().__init__()
-        self.win_height = win_height
-        self.win_width = win_width
-        self.config_panel_width_pct = 19
-        self.display_panel_width_pct = 79
-        self.panel_height_pct = .98
-        self.config_panel_width = int(self.win_width * self.config_panel_width_pct*.01)
-        self.config_panel_height = self.win_height * self.panel_height_pct
-        self.display_panel_width = int(self.win_width * self.display_panel_width_pct*.01)
-        self.display_panel_height = self.win_height * self.panel_height_pct
+        self.win_height = win_height if win_height > 400 else 400
+        self.win_width = win_width if win_width > 600 else 600
+        self.panel_margin = 20
+        self.config_panel_width = 200-self.panel_margin
+        self.config_panel_height = self.win_height - self.panel_margin
+        self.display_panel_width = self.win_width-self.config_panel_width - self.panel_margin
+        self.display_panel_height = self.win_height - self.panel_margin
 
         self.setWindowTitle("FractalStudio")
         self.setGeometry(100, 100, self.win_width, self.win_height)
