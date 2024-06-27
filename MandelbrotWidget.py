@@ -3,20 +3,22 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtGui import QPainter, QColor, QImage
 from PyQt5.QtCore import Qt, QRectF, QTimer
 from Fractals import Fractals
+from FractalColorMap import FractalColorMap
 
 class MandelbrotWidget(QWidget):
     def __init__(self, parent=None, width=600, height=800):
         super().__init__(parent)
         self.fractals = Fractals()
-        self.color_map = self.load_color_map()
+        self.color_map = FractalColorMap("alex")
         self.center = (0, 0)
         self.zoom = .5
         self.width = width
         self.height = height
-        self.depth = 200
+        self.depth = 250
         self.power = 2.0
         self.image = None
-        self.current_resolution = (int(.25*self.width), int(.25*self.height))  # Start with a low resolution
+        #TODO change back to .25
+        self.current_resolution = (int(1*self.width), int(1*self.height))
         self.setFixedSize(self.width, self.height)
         self.render_timer = QTimer(self)
         self.render_timer.timeout.connect(self.progressiveRender)
@@ -34,7 +36,8 @@ class MandelbrotWidget(QWidget):
 
     def startProgressiveRender(self):
         if not self.render_timer.isActive():
-            self.current_resolution = (int(.25*self.width), int(.25*self.height))
+            #TODO change back to .25
+            self.current_resolution = (int(1*self.width), int(1*self.height))
             self.render_timer.start(0)  # Start immediately
 
     def progressiveRender(self):
@@ -63,9 +66,10 @@ class MandelbrotWidget(QWidget):
 
     def updateImage(self, escape_depths):
         image = QImage(self.current_resolution[0], self.current_resolution[1], QImage.Format_RGB32)
+        colored_fractal = self.color_map.apply_colormap(escape_depths, self.depth)
         for y in range(self.current_resolution[1]):
             for x in range(self.current_resolution[0]):
-                color = QColor(*self.color_map[escape_depths[y][x]%len(self.color_map)])
+                color = QColor(*colored_fractal[y][x])
                 image.setPixel(x, y, color.rgb())
         self.image = image.scaled(self.width, self.height)
 
@@ -73,13 +77,13 @@ class MandelbrotWidget(QWidget):
         zoom_factor = 1.5
         if event.angleDelta().y() > 0:
             self.zoom *= zoom_factor
-            self.depth = int(self.depth*1.02)
+            #TODO Change from *1
+            self.depth = int(self.depth*1)
         else:
             self.zoom /= zoom_factor
-            self.depth = int(self.depth*1.02)
+            #TODO Change from *1
+            self.depth = int(self.depth*1)
 
-        print(self.zoom)
-        print(self.depth)
         self.image = None
         self.update()
 
@@ -94,15 +98,6 @@ class MandelbrotWidget(QWidget):
             self.center = (self.center[0] + dx, self.center[1] + dy)
             self.image = None
             self.update()
-
-    def load_color_map(self, map_file = "./color_maps/color_grad.txt"):
-        # Load Color Map (probably create a color map class)
-        color_map = {}
-        with open(map_file, "r+") as fr:
-            file_lines = fr.readlines() 
-            colors = [c.split(",") for c in file_lines]  
-            color_map = {i:(int(c[0]), int(c[1]), int(c[2])) for i,c in enumerate(colors)}
-        return color_map
 
 class MainWindow(QMainWindow):
     def __init__(self):

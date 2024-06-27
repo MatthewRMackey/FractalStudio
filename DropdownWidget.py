@@ -1,12 +1,12 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QComboBox
 
 class DropdownWidget(QWidget):
     def __init__(self, label_text, options, parent=None):
         super().__init__(parent)
         
         # Create layout
-        layout = QVBoxLayout(self)
+        layout = QHBoxLayout(self)
         
         # Create and add label
         self.label = QLabel(label_text)

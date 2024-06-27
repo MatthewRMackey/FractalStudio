@@ -4,7 +4,7 @@ from LabeledEntryBoxWidget import LabeledEntryBoxWidget
 from DropdownWidget import DropdownWidget
 
 class ConfigWidget(QWidget):
-    def __init__(self, parent=None, width=600, height=800):
+    def __init__(self, parent=None, width=200, height=600):
         super().__init__(parent)
         self.width = width
         self.height = height
@@ -13,6 +13,7 @@ class ConfigWidget(QWidget):
          # Create widgets
         self.power_entry = LabeledEntryBoxWidget("Power", "2", self)
         self.zoom_entry = LabeledEntryBoxWidget("Zoom", ".5", self)
+        self.depth_entry = LabeledEntryBoxWidget("Depth", "100", self)
         self.center_label = QLabel("Center Location")
         self.center_x_entry = LabeledEntryBoxWidget("x", "0", self)
         self.center_y_entry = LabeledEntryBoxWidget("y", "0", self)
@@ -34,7 +35,8 @@ class ConfigWidget(QWidget):
         center_v_layout.setContentsMargins(0,0,0,0)
 
         v_layout = QVBoxLayout()
-        # v_layout.addWidget(self.label, alignment=QtCore.Qt.AlignCenter)
+        v_layout.addWidget(self.label, alignment=QtCore.Qt.AlignCenter)
+        v_layout.addWidget(self.depth_entry)
         v_layout.addWidget(self.power_entry)
         v_layout.addWidget(self.zoom_entry)
         v_layout.addLayout(center_v_layout)
@@ -51,11 +53,25 @@ class ConfigWidget(QWidget):
         
         self.setFixedSize(self.width, self.height)
 
-        # Connect button click to a method
-        self.gen_button.clicked.connect(self.on_button_click)
+        # Button function connects
+        self.gen_button.clicked.connect(self.on_gen_button_click)
+        self.gen_button.clicked.connect(self.on_save_button_click)
+        self.gen_button.clicked.connect(self.on_colmap_button_click)
+        self.gen_button.clicked.connect(self.on_reset_button_click)
     
-    def on_button_click(self):
-        print("correct")
+    def on_gen_button_click(self):
+        #TODO DONT KNOW WHAT TO DO HERE HELP ME
+        # Disgusting I know
+        self.parent().regenerate_fractal((-2,2), (-2,2), 600, 600, 10, 3)
     
+    def on_save_button_click(self):
+        print("save")
+
+    def on_colmap_button_click(self):
+        print("colmap")
+
+    def on_reset_button_click(self):
+        print("reset")
+
     def mousePressEvent(self, event):
         print("Mouse event")

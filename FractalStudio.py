@@ -10,7 +10,7 @@ from MandelbrotWidget import MandelbrotWidget
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, win_height=400, win_width=600):
+    def __init__(self,  win_width=600, win_height=400):
         super().__init__()
         self.win_height = win_height if win_height > 400 else 400
         self.win_width = win_width if win_width > 600 else 600
@@ -46,8 +46,14 @@ class MainWindow(QMainWindow):
     def build_display_panel(self):
         self.display_panel = MandelbrotWidget(self, self.display_panel_width, self.display_panel_height)
 
+    def regenerate_fractal(self, depth, power, zoom, center):
+        self.display_panel.center = center
+        self.display_panel.zoom = zoom
+        fractal = self.display_panel.fractals
+        self.display_panel.updateImage(fractal.generateMandelbrot(fractal.r_range, fractal.i_range, fractal.r_sgmts, fractal.i_sgmts, depth, power))    
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = MainWindow(win_width=1200, win_height=1000)
     window.show()
     sys.exit(app.exec_())
