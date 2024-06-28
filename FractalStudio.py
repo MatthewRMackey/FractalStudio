@@ -67,10 +67,15 @@ class MainWindow(QMainWindow):
         display_panel.startProgressiveRender()
 
     def on_reset_button_click(self):
-        deleted_widget = self.main_layout.itemAt(1).widget()
-        self.main_layout.removeWidget(deleted_widget)
-        deleted_widget.deleteLater()
+        deleted_config = self.main_layout.itemAt(0).widget()
+        deleted_display = self.main_layout.itemAt(1).widget()
+        self.main_layout.removeWidget(deleted_config)
+        deleted_config.deleteLater()
+        self.main_layout.removeWidget(deleted_display)
+        deleted_display.deleteLater()
+        self.build_config_panel()
         self.build_display_panel()
+        self.main_layout.addWidget(self.config_panel)
         self.main_layout.addWidget(self.display_panel)
     
     def on_save_button_click(self):

@@ -19,12 +19,6 @@ class DropdownWidget(QWidget):
         
         # Adjust margins
         layout.setContentsMargins(0,0,0,0)
-        
-        # Connect the combo box's currentIndexChanged signal to our custom slot
-        self.combo_box.currentIndexChanged.connect(self.selection_changed)
-        
-    def selection_changed(self, index):
-        print(f"Selection changed to: {self.combo_box.currentText()} (index: {index})")
     
     def get_current_selection(self):
         return self.combo_box.currentText()
