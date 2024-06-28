@@ -2,15 +2,15 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtGui import QPainter, QColor, QImage
 from PyQt5.QtCore import Qt, QRectF, QTimer
-from Fractals import Fractals
-from FractalColorMap import FractalColorMap
+from fractals.Fractals import Fractals
+from util.FractalColorMap import FractalColorMap
 
 class MandelbrotWidget(QWidget):
     def __init__(self, parent=None, width=600, height=800):
         super().__init__(parent)
         self.fractals = Fractals()
-        self.color_map = FractalColorMap("alex")
-        self.center = (0, 0)
+        self.color_map = FractalColorMap("Default")
+        self.center = (0, 0) #(x,y)
         self.zoom = .5
         self.width = width
         self.height = height
@@ -86,6 +86,7 @@ class MandelbrotWidget(QWidget):
 
         self.image = None
         self.update()
+        self.parent().wheelEvent(event)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -98,6 +99,7 @@ class MandelbrotWidget(QWidget):
             self.center = (self.center[0] + dx, self.center[1] + dy)
             self.image = None
             self.update()
+            self.parent().mousePressEvent(event)
 
 class MainWindow(QMainWindow):
     def __init__(self):

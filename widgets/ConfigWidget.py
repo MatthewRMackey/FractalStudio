@@ -1,7 +1,15 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout
-from LabeledEntryBoxWidget import LabeledEntryBoxWidget
-from DropdownWidget import DropdownWidget
+from widgets.LabeledEntryBoxWidget import LabeledEntryBoxWidget
+from widgets.DropdownWidget import DropdownWidget
+
+
+RESMAP = ["600x400",
+          "1000x800",
+          "1000x1000",
+          "1200x1000",
+          "1920x1080",
+          "3200x1440"]
 
 class ConfigWidget(QWidget):
     def __init__(self, parent=None, width=200, height=600):
@@ -17,9 +25,9 @@ class ConfigWidget(QWidget):
         self.center_label = QLabel("Center Location")
         self.center_x_entry = LabeledEntryBoxWidget("x", "0", self)
         self.center_y_entry = LabeledEntryBoxWidget("y", "0", self)
-        self.fractal_dropdown = DropdownWidget("Fractal Type", ["1","2","3"], self)
-        self.col_map_dropdown = DropdownWidget("Color Map", ["Name1","Name2","Name3"], self)
-        self.res_dropdown = DropdownWidget("Resolution", ["600x400","1000x800","1920x1080"], self)
+        self.fractal_dropdown = DropdownWidget("Fractal Type", ["Mandelbrot","Julia","Siepinski"], self)
+        self.col_map_dropdown = DropdownWidget("Color Map", ["Default","Alex","Name3"], self) #TODO change to dynamic loading
+        self.res_dropdown = DropdownWidget("Resolution", RESMAP, self)
         self.gen_button = QPushButton("Generate Fractal")
         self.save_button = QPushButton("Save Image")
         self.new_map_button = QPushButton("Generate New Color Map")
@@ -54,24 +62,8 @@ class ConfigWidget(QWidget):
         self.setFixedSize(self.width, self.height)
 
         # Button function connects
-        self.gen_button.clicked.connect(self.on_gen_button_click)
-        self.gen_button.clicked.connect(self.on_save_button_click)
-        self.gen_button.clicked.connect(self.on_colmap_button_click)
-        self.gen_button.clicked.connect(self.on_reset_button_click)
-    
-    def on_gen_button_click(self):
-        #TODO DONT KNOW WHAT TO DO HERE HELP ME
-        # Disgusting I know
-        self.parent().regenerate_fractal((-2,2), (-2,2), 600, 600, 10, 3)
-    
-    def on_save_button_click(self):
-        print("save")
+        self.new_map_button.clicked.connect(self.on_colmap_button_click)
 
     def on_colmap_button_click(self):
         print("colmap")
 
-    def on_reset_button_click(self):
-        print("reset")
-
-    def mousePressEvent(self, event):
-        print("Mouse event")

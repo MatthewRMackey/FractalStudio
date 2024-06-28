@@ -2,7 +2,6 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-from Fractals import Fractals
 
 class FractalColorMap:
     def __init__(self, name="default"):
