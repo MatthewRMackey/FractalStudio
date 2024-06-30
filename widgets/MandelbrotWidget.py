@@ -14,7 +14,7 @@ class MandelbrotWidget(QWidget):
         self.zoom = .5
         self.width = width
         self.height = height
-        self.depth = 250
+        self.depth = 100
         self.power = 2.0
         self.image = None
         #TODO change back to .25
@@ -26,7 +26,7 @@ class MandelbrotWidget(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         if self.image is None:
-            # Draw a blank background or a "Loading" message
+            # Draw a blank background and a "Rendering" message
             painter.fillRect(self.rect(), Qt.black)
             painter.setPen(Qt.white)
             painter.drawText(self.rect(), Qt.AlignCenter, "Rendering...")
