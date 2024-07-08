@@ -12,8 +12,11 @@ class Fractals:
 
         # Move the grid to the GPU
         x, y = x.cuda(), y.cuda()
-        c = x + 1j * y
-        z = torch.zeros_like(c)
+        # c = x + 1j * y
+        # z = torch.zeros_like(c)
+        z = x + 1j * y
+        c = .35 + 0.06j  # Fixed complex number for the Julia set
+
 
         # Initialize arrays to store the results
         escape_depth = torch.zeros_like(x, dtype=torch.float32, device='cuda')
@@ -39,4 +42,8 @@ class Fractals:
         # Set escape_depth to depth for points that never escaped
         escape_depth[~escaped] = depth
         
+        # Rotate and mirror operations
+        # escape_depth = torch.flip(escape_depth, [0, 1])
+        # escape_depth = torch.flip(escape_depth, [0])
+
         return escape_depth.cpu().tolist()

@@ -15,7 +15,7 @@ class MandelbrotWidget(QWidget):
         self.width = width
         self.height = height
         self.depth = 100
-        self.power = 2.0
+        self.power = 2
         self.image = None
         #TODO change back to .25
         self.current_resolution = (int(1*self.width), int(1*self.height))
