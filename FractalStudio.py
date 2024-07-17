@@ -8,7 +8,8 @@ from PyQt5.QtGui import QImage, QPixmap, QPalette, QColor
 from PyQt5.QtCore import Qt
 
 from widgets.ConfigWidget import ConfigWidget
-from widgets.MandelbrotWidget import MandelbrotWidget
+from widgets.FractalWidgets.MandelbrotWidget import MandelbrotWidget
+from widgets.FractalWidgets.JuliaWidget import JuliaWidget
 from util.FractalColorMap import FractalColorMap
 
 
@@ -50,7 +51,8 @@ class MainWindow(QMainWindow):
 
 
     def build_display_panel(self):
-        self.display_panel = MandelbrotWidget(self, self.display_panel_width, self.display_panel_height)
+        # self.display_panel = MandelbrotWidget(self, self.display_panel_width, self.display_panel_height)
+        self.display_panel = JuliaWidget(self, self.display_panel_width, self.display_panel_height)
 
     def on_gen_button_click(self):
         display_panel = self.display_panel
@@ -62,8 +64,8 @@ class MainWindow(QMainWindow):
         display_panel.zoom = float(config_panel.zoom_entry.line_edit.text())
         display_panel.center = (float(config_panel.center_x_entry.line_edit.text()), float(config_panel.center_y_entry.line_edit.text()))
         # self.display_panel.fractals #TODO Need to abstract fractal so this can be changed from mandel to julia to Sierpinski Triangles
-        display_panel.color_map.name = config_panel.col_map_dropdown.get_current_selection()
-        display_panel.color_map.color_map = display_panel.color_map.build_color_map(display_panel.depth)
+        display_panel.color_map.map_name = config_panel.col_map_dropdown.get_current_selection()
+        display_panel.color_map.color_map = display_panel.color_map.build_color_map()
         display_panel.startProgressiveRender()
 
     def on_reset_button_click(self):
@@ -90,7 +92,7 @@ class MainWindow(QMainWindow):
         y_max = display_panel.center[1] + display_panel.height / 2 * scale_height
 
         # RGB 2D map
-        escape_depths = display_panel.fractals.generateMandelbrot(
+        escape_depths = display_panel.generateMandelbrot(
             (x_min, x_max), (y_min, y_max), 
             display_panel.current_resolution[0], display_panel.current_resolution[1], 
             display_panel.depth, display_panel.power
@@ -98,7 +100,8 @@ class MainWindow(QMainWindow):
 
         # OpenCV uses BGR format, so convert RGB to BGR
         escape_depths = np.array(escape_depths)
-        bgr_array = cv2.cvtColor(display_panel.color_map.apply_colormap(escape_depths, display_panel.depth), cv2.COLOR_RGB2BGR)
+        colored_points = display_panel.color_map.apply_colormap(escape_depths).astype(np.uint8)
+        bgr_array = cv2.cvtColor(colored_points, cv2.COLOR_RGB2BGR)
         
         # Count existing files and save
         os.makedirs("./imgs/mandelbrot/", exist_ok=True)

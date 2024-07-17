@@ -4,10 +4,11 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
 class FractalColorMap:
-    def __init__(self, name="default"):
-        self.name = name
+    def __init__(self, map_name="default", num_colors = 50):
+        self.map_name = map_name
+        self.num_colors = num_colors
         self.file_name = "./color_maps/color_maps.json"
-        self.color_dict = self.load_color_json()
+        self.map_dict = self.load_color_json()
         self.color_map = self.build_color_map()
 
     def load_color_json(self):
@@ -16,36 +17,38 @@ class FractalColorMap:
 
     def write_color_json(self):
         with open(self.file_name, 'w') as file:
-            json.dump(self.color_dict, file, indent=2)
+            json.dump(self.map_dict, file, indent=2)
 
     def add_color_scheme(self, name, colors):
-        self.color_dict[name] = colors
+        self.map_dict[name] = colors
 
-    def build_color_map(self, num_colors=10):
-        colors = self.color_dict[self.name]
-        if not colors:
-            raise ValueError(f"No colors found for scheme '{self.name}'")
-
-        # Normalize the color values to be between 0 and 1
-        normalized_colors = [[r/255, g/255, b/255] for r, g, b in colors]
-
-        # Create evenly spaced positions for each color
-        positions = np.linspace(0, 1, len(normalized_colors))
-
-        # Create the color map
-        return LinearSegmentedColormap.from_list(self.name, list(zip(positions, normalized_colors)), N=10)
-
-    def apply_colormap(self, escape_depths, max_depth):
-        # Normalize the escape depths
-        normalized_depths = np.array(escape_depths) / max_depth
-
-        # Ensure the values are in the range [0, 1]
-        normalized_depths = np.clip(normalized_depths, 0, 1)
+    def apply_colormap(self, escape_depths):
+        colored_fractal = []
 
         # Apply the colormap
-        colored_fractal = self.color_map(normalized_depths)
+        for row in escape_depths:
+            colored_fractal.append(list(map(lambda e: self.color_map[int(e)%self.num_colors], row)))
 
-        # Convert to RGB integer values
-        rgb_fractal = (colored_fractal[:, :, :3] * 255).astype(np.uint8)
+        return np.array(colored_fractal)
+    
+    def build_color_map(self):
+        basis_colors = self.map_dict[self.map_name]
+        color_map = []
+        k = len(basis_colors) - 1
 
-        return rgb_fractal 
+        for i in range(self.num_colors):
+            t = i / (self.num_colors - 1)
+            j = int(t * k)
+
+            if j == k:
+                color = basis_colors[j]
+            else:
+                t_interp = (t - j / k) * k
+                color = self.lerp_color(basis_colors[j], basis_colors[j + 1], t_interp)
+
+            color_map.append(color)
+
+        return color_map
+
+    def lerp_color(self, color1, color2, t):
+        return tuple(int(c1 + (c2 - c1) * t) for c1, c2 in zip(color1, color2))

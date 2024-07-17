@@ -2,13 +2,16 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtGui import QPainter, QColor, QImage
 from PyQt5.QtCore import Qt, QRectF, QTimer
-from fractals.Fractals import Fractals
+
 from util.FractalColorMap import FractalColorMap
+import torch
+from torch import complex64
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class MandelbrotWidget(QWidget):
     def __init__(self, parent=None, width=600, height=800):
         super().__init__(parent)
-        self.fractals = Fractals()
         self.color_map = FractalColorMap("Default")
         self.center = (0, 0) #(x,y)
         self.zoom = .5
@@ -17,11 +20,42 @@ class MandelbrotWidget(QWidget):
         self.depth = 100
         self.power = 2
         self.image = None
+        self.mandelbrot = self.generateMandelbrot((-2,-2), (-2, 2), self.width, self.height, self.depth, self.power)
         #TODO change back to .25
         self.current_resolution = (int(1*self.width), int(1*self.height))
         self.setFixedSize(self.width, self.height)
         self.render_timer = QTimer(self)
         self.render_timer.timeout.connect(self.progressiveRender)
+
+    def generateMandelbrot(self, r_range: tuple, i_range: tuple, r_sgmts: int, i_sgmts: int, depth: int, power: float):
+        x = torch.linspace(r_range[0], r_range[1], r_sgmts, dtype=torch.float32)
+        y = torch.linspace(i_range[0], i_range[1], i_sgmts, dtype=torch.float32)
+        x, y = torch.meshgrid(x, y, indexing="xy")
+
+        x, y = x.cuda(), y.cuda()
+        c = x + 1j * y
+        z = torch.zeros_like(c)
+
+        escape_depth = torch.zeros_like(x, dtype=torch.float32, device='cuda')
+        escaped = torch.zeros_like(x, dtype=torch.bool, device='cuda')
+
+        for i in range(depth):
+            z = z ** power + c
+            escaped = torch.abs(z) > 2
+
+            newly_escaped = escaped & (escape_depth == 0)
+            escape_depth[newly_escaped] = i + 1
+
+            if torch.all(escaped):
+                break
+
+        # Optional: Implement smooth coloring
+        # log_zn = torch.log(torch.abs(z)) / 2**power
+        # nu = torch.log(log_zn / torch.log(torch.tensor(2.0))) / torch.log(torch.tensor(2.0))
+        # smooth_iter = i + 1 - nu
+        # escape_depth = torch.where(escaped, smooth_iter, torch.tensor(depth, dtype=torch.float32))
+
+        return escape_depth.cpu().tolist()
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -48,7 +82,7 @@ class MandelbrotWidget(QWidget):
         y_min = self.center[1] - self.height / 2 * scale_height
         y_max = self.center[1] + self.height / 2 * scale_height
 
-        escape_depths = self.fractals.generateMandelbrot(
+        escape_depths = self.generateMandelbrot(
             (x_min, x_max), (y_min, y_max), 
             self.current_resolution[0], self.current_resolution[1], 
             self.depth, self.power
@@ -66,7 +100,7 @@ class MandelbrotWidget(QWidget):
 
     def updateImage(self, escape_depths):
         image = QImage(self.current_resolution[0], self.current_resolution[1], QImage.Format_RGB32)
-        colored_fractal = self.color_map.apply_colormap(escape_depths, self.depth)
+        colored_fractal = self.color_map.apply_colormap(escape_depths)
         for y in range(self.current_resolution[1]):
             for x in range(self.current_resolution[0]):
                 color = QColor(*colored_fractal[y][x])
@@ -100,16 +134,3 @@ class MandelbrotWidget(QWidget):
             self.image = None
             self.update()
             self.parent().mousePressEvent(event)
-
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Mandelbrot Explorer")
-        self.mandelbrot_widget = MandelbrotWidget(self)
-        self.setCentralWidget(self.mandelbrot_widget)
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec_())
