@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
             display_panel = self.display_panel
             self.config_panel.center_x_entry.line_edit.setText("0.0")
             self.config_panel.center_y_entry.line_edit.setText("0.0")
-
+            self.config_panel.zoom_entry.line_edit.setText(".5")
             # Remove old fractal display and add new display and reset config
             # TODO when adding the c entry box, it will be updated here after adding config back
             deleted_display = self.main_layout.itemAt(1).widget()
@@ -81,11 +81,11 @@ class MainWindow(QMainWindow):
         else:
             # Change display variables based on inputs 
             # TODO This should update c whenever that entry box is added
-            display_panel.depth = int(config_panel.depth_entry.line_edit.text())
-            display_panel.power = float(config_panel.power_entry.line_edit.text())
             display_panel.zoom = float(config_panel.zoom_entry.line_edit.text())
             display_panel.center = (float(config_panel.center_x_entry.line_edit.text()), float(config_panel.center_y_entry.line_edit.text()))
         
+        display_panel.depth = int(config_panel.depth_entry.line_edit.text())
+        display_panel.power = float(config_panel.power_entry.line_edit.text())
         display_panel.color_map.map_name = config_panel.col_map_dropdown.get_current_selection()
         display_panel.color_map.color_map = display_panel.color_map.build_color_map()
         display_panel.startProgressiveRender()
@@ -122,7 +122,7 @@ class MainWindow(QMainWindow):
                 display_panel.depth, display_panel.power
             )
         elif self.f_type == "Julia":
-            escape_depths = display_panel.generateMandelbrot(
+            escape_depths = display_panel.generateJulia(
                 (x_min, x_max), (y_min, y_max), 
                 display_panel.current_resolution[0], display_panel.current_resolution[1], 
                 display_panel.depth, display_panel.power
@@ -133,11 +133,19 @@ class MainWindow(QMainWindow):
         colored_points = display_panel.color_map.apply_colormap(escape_depths).astype(np.uint8)
         bgr_array = cv2.cvtColor(colored_points, cv2.COLOR_RGB2BGR)
         
-        # Count existing files and save
-        os.makedirs("./imgs/mandelbrot/", exist_ok=True)
-        existing_files = len([f for f in os.listdir("./imgs/mandelbrot/") if f.startswith('output_image_') and f.endswith('.png')])
-        filename = f'./imgs/mandelbrot/output_image_{existing_files}.png'
-        cv2.imwrite(filename, bgr_array)
+        if self.f_type == "Mandelbrot":
+            # Count existing files and save
+            os.makedirs("./imgs/mandelbrot/", exist_ok=True)
+            existing_files = len([f for f in os.listdir("./imgs/mandelbrot/") if f.startswith('output_image_') and f.endswith('.png')])
+            filename = f'./imgs/mandelbrot/output_image_{existing_files}.png'
+            cv2.imwrite(filename, bgr_array)
+        elif self.f_type == "Julia":
+            # Count existing files and save
+            os.makedirs("./imgs/julia/", exist_ok=True)
+            existing_files = len([f for f in os.listdir("./imgs/julia/") if f.startswith('output_image_') and f.endswith('.png')])
+            filename = f'./imgs/julia/output_image_{existing_files}.png'
+            cv2.imwrite(filename, bgr_array)
+
 
     def wheelEvent(self, event):
         self.config_panel.zoom_entry.line_edit.setText(str(self.display_panel.zoom))

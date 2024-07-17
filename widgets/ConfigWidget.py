@@ -26,7 +26,7 @@ class ConfigWidget(QWidget):
         self.center_x_entry = LabeledEntryBoxWidget("x", "0", self)
         self.center_y_entry = LabeledEntryBoxWidget("y", "0", self)
         self.fractal_dropdown = DropdownWidget("Fractal Type", ["Mandelbrot","Julia","Siepinski"], self)
-        self.col_map_dropdown = DropdownWidget("Color Map", ["Default","Alex","Name3"], self) #TODO change to dynamic loading
+        self.col_map_dropdown = DropdownWidget("Color Map", ["Default","PinkPoison","Name3"], self) #TODO change to dynamic loading
         self.res_dropdown = DropdownWidget("Resolution", RESMAP, self)
         self.gen_button = QPushButton("Generate Fractal")
         self.save_button = QPushButton("Save Image")
