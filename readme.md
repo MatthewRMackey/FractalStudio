@@ -12,12 +12,14 @@
 9. Save zoom videos and various coloring animations.
 
 ## TODO
-1. ~~Adjust fractal implementation such that each FractalWidget is self contained.~~
-2. Add ability to switch from mandelbrot to julia and vice versa.
-2. Add an entry box for c in the julia set and fix backend so when julia is generated c=center
-3. Add linear panning functionality across all changeable variables (power, depth, center, julia c, and zoom factors)
-4. Add settings file that default values and things like discrete/smooth coloring, resolution, etc can be loaded from on startup.
-5. Improve visual look of the configuration/options panel.
+- [x] Adjust fractal implementation such that each FractalWidget is self contained.
+- [ ] Add ability to switch from mandelbrot to julia and vice versa.
+- [ ] Add an entry box for c in the julia set and fix backend so when julia is generated c=center
+- [ ] Fix save image location, and figure out method for metadata collection for each image
+- [ ] Add linear panning functionality across all changeable variables (power, depth, center, julia c, and zoom factors)
+- [ ] Add smooth/fractional escape capabilities
+- [ ] Add settings file that default values and things like discrete/smooth coloring, resolution, etc can be loaded from on startup.
+- [ ] Improve visual look of the configuration/options panel.
 
 
 ## Examples
