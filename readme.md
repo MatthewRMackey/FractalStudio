@@ -12,7 +12,7 @@
 9. Save zoom videos and various coloring animations.
 
 ## TODO
-- [ ] Algebraic Optimizations (reducing number of multiplications -> O(n<sup>3</sup>) for sqaure matrix multiplication)
+- [ ] Algebraic Optimizations (reducing number of multiplications -> O(n<sup>2</sup>) for multiplication)
 - [ ] Fix Reset All Button
 - [ ] Add an entry box for c in the julia set and fix backend so when julia is generated c=center
 - [ ] Fix save image location, and figure out method for metadata collection for each image
