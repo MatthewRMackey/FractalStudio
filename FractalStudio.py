@@ -12,6 +12,12 @@ from widgets.FractalWidgets.MandelbrotWidget import MandelbrotWidget
 from widgets.FractalWidgets.JuliaWidget import JuliaWidget
 from util.FractalColorMap import FractalColorMap
 
+FRACTAL_TYPES = {
+    'Mandelbrot' : 'M',
+    'Julia' : 'J',
+    'Sirepiński Triangle' : 'ST' ,
+}
+
 class MainWindow(QMainWindow):
     def __init__(self,  win_width=600, win_height=400):
         super().__init__()
@@ -50,10 +56,10 @@ class MainWindow(QMainWindow):
         self.config_panel.save_button.clicked.connect(self.on_save_button_click)
 
 
-    def build_display_panel(self, type="M"):
-        if type == "Mandelbrot":
+    def build_display_panel(self, f_type="Mandelbrot"):
+        if FRACTAL_TYPES[f_type] == "M":
             self.display_panel = MandelbrotWidget(self, self.display_panel_width, self.display_panel_height)
-        elif type == "Julia":
+        elif FRACTAL_TYPES[f_type] == "J":
             self.display_panel = JuliaWidget(self, self.display_panel_width, self.display_panel_height, 
                                             c=complex(float(self.config_panel.center_x_entry.line_edit.text()), 
                                                       float(self.config_panel.center_y_entry.line_edit.text())))
@@ -116,13 +122,13 @@ class MainWindow(QMainWindow):
         # RGB 2D map
         escape_depth = [[]]
         if self.f_type == "Mandelbrot":
-            escape_depths = display_panel.generateMandelbrot(
+            escape_depths = display_panel.generate(
                 (x_min, x_max), (y_min, y_max), 
                 display_panel.current_resolution[0], display_panel.current_resolution[1], 
                 display_panel.depth, display_panel.power
             )
         elif self.f_type == "Julia":
-            escape_depths = display_panel.generateJulia(
+            escape_depths = display_panel.generate(
                 (x_min, x_max), (y_min, y_max), 
                 display_panel.current_resolution[0], display_panel.current_resolution[1], 
                 display_panel.depth, display_panel.power

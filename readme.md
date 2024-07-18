@@ -1,6 +1,6 @@
 # Fractal Studio
 
-## Features
+## Features (and Future Features)
 1. GUI using PyQT5
 2. Fractal displays (Mandelbrot/Julia currently) calculated using PyTorch tensors to leverage CUDA cores for improved speed.
 3. Adjust the type of fractal, zoom depth, zoom factor, center, fractal power, and color map on-the-fly.
@@ -12,17 +12,23 @@
 9. Save zoom videos and various coloring animations.
 
 ## TODO
-- [x] Adjust fractal implementation such that each FractalWidget is self contained.
-- [x] Add ability to switch from mandelbrot to julia and vice versa.
+- [ ] Algebraic Optimizations (reducing number of multiplications -> O(n<sup>3</sup>) for sqaure matrix multiplication)
 - [ ] Fix Reset All Button
 - [ ] Add an entry box for c in the julia set and fix backend so when julia is generated c=center
 - [ ] Fix save image location, and figure out method for metadata collection for each image
 - [ ] Add linear panning functionality across all changeable variables (power, depth, center, julia c, and zoom factors)
+- [ ] Add julia morphing following cursor path
 - [ ] Add smooth/fractional escape capabilities
 - [ ] Add settings file that default values and things like discrete/smooth coloring, resolution, etc can be loaded from on startup.
 - [ ] Improve visual look of the configuration/options panel (rename to options... config will become a preset file).
 - [ ] Fix error when clicking in the whitespace of options panel.
 
+## Important References
+- [Algebraic Optimizations.](https://randomascii.wordpress.com/2011/08/13/faster-fractals-through-algebra/)
+- [Spektre on fractional escapes, infinitely small numbers, and perturbation theory.](https://stackoverflow.com/questions/66709289/what-are-the-fastest-algorithms-for-rendering-the-mandelbrot-set)
+- [Multiplication Algorithms Wikipedia.](https://en.wikipedia.org/wiki/Multiplication_algorithm#Lattice_multiplication)
+- [Plotting Algorithm for Mandelbrot Wikipedia.](https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set)
+- [Creating Images from Voronoi Diagrams(2020) - might create a texture effect.](https://github.com/nickvdw/image-to-voronoi)
 
 ## Discrete Coloring Examples
 ### Mandelbrot
