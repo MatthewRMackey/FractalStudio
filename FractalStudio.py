@@ -115,18 +115,12 @@ class MainWindow(QMainWindow):
         colored_points = self.display_panel.color_map.apply_colormap(escape_depths).astype(np.uint8)
         bgr_array = cv2.cvtColor(colored_points, cv2.COLOR_RGB2BGR)
         
-        if FRACTAL_TYPES[self.f_type] == "M":
-            # Count existing files and save
-            os.makedirs("./imgs/mandelbrot/", exist_ok=True)
-            existing_files = len([f for f in os.listdir("./imgs/mandelbrot/") if f.startswith('output_image_') and f.endswith('.png')])
-            filename = f'./imgs/mandelbrot/output_image_{existing_files}.png'
-            cv2.imwrite(filename, bgr_array)
-        elif FRACTAL_TYPES[self.f_type] == "J":
-            # Count existing files and save
-            os.makedirs("./imgs/julia/", exist_ok=True)
-            existing_files = len([f for f in os.listdir("./imgs/julia/") if f.startswith('output_image_') and f.endswith('.png')])
-            filename = f'./imgs/julia/output_image_{existing_files}.png'
-            cv2.imwrite(filename, bgr_array)
+        # Count existing files and save
+        directory = "./media/imgs/"+self.f_type+"/"
+        os.makedirs(directory, exist_ok=True)
+        existing_files = len([f for f in os.listdir(directory) if f.startswith('output_image_') and f.endswith('.png')])
+        filename = directory+f'output_image_{existing_files}.png'
+        cv2.imwrite(filename, bgr_array)
 
 
     def wheelEvent(self, event):
