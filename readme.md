@@ -3,15 +3,12 @@
 ## Features (and Future Features)
 1. GUI using PyQT5
 2. Fractal displays (Mandelbrot/Julia currently) calculated using PyTorch tensors to leverage CUDA cores for improved speed.
-3. Adjust the type of fractal, zoom depth, zoom factor, center, fractal power, and color map on-the-fly.
+3. Adjust the type of fractal, zoom depth, zoom factor, center, fractal power, and color map in the GUI.
 4. Click-to-center and scroll-to-zoom interactivity.
-5. Integer and Fractional Escape Depth Calculations
-6. Custom Color Maps for both integer and fractional sets.
-7. Panning functionality across multiple variables.
-8. Save Image with center, zoom, type, and map metadata.
-9. Save zoom videos and various coloring animations.
+5. Save images of the fractal.
 
-## Discrete Coloring Examples
+
+## Examples
 ### Mandelbrot
 
 ![](./media/samples/mandelbrot/output_image_0.png "Mandelbrot: z=.5, center=(0,0), depth=100, 50 colors")
@@ -27,9 +24,10 @@
 ![](./media/samples/julia/output_image_2.png "Julia: z=.5, center=(0,0), c=(-1.012,-0.32244897959183677), depth=100, 50 colors")
 ![](./media/samples/julia/output_image_3.png "Julia: z=.5, power=1.09, center=(0,0), c=(-0.044,0.0163265306122449), depth=100, 50 colors")
 
-## Important References
+## References
 - [Algebraic Optimizations.](https://randomascii.wordpress.com/2011/08/13/faster-fractals-through-algebra/)
 - [Spektre on fractional escapes, infinitely small numbers, and perturbation theory.](https://stackoverflow.com/questions/66709289/what-are-the-fastest-algorithms-for-rendering-the-mandelbrot-set)
 - [Multiplication Algorithms Wikipedia.](https://en.wikipedia.org/wiki/Multiplication_algorithm#Lattice_multiplication)
 - [Plotting Algorithm for Mandelbrot Wikipedia.](https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set)
 - [Creating Images from Voronoi Diagrams(2020) - might create a texture effect.](https://github.com/nickvdw/image-to-voronoi)
+- [HSLUV Color Gradient](https://github.com/adammaj1/hsluv-color-gradient)

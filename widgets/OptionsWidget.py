@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout
-from widgets.LabeledEntryBoxWidget import LabeledEntryBoxWidget
-from widgets.DropdownWidget import DropdownWidget
+from Widgets.LabeledEntryBoxWidget import LabeledEntryBoxWidget
+from Widgets.DropdownWidget import DropdownWidget
 
 
 RESMAP = ["600x400",
@@ -11,12 +11,12 @@ RESMAP = ["600x400",
           "1920x1080",
           "3200x1440"]
 
-class ConfigWidget(QWidget):
+class OptionsWidget(QWidget):
     def __init__(self, parent=None, width=200, height=600):
         super().__init__(parent)
         self.width = width
         self.height = height
-        self.label = QLabel("Configuration")
+        self.label = QLabel("Options")
         
          # Create widgets
         self.power_entry = LabeledEntryBoxWidget("Power", "2", self)

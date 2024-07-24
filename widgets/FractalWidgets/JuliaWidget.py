@@ -9,7 +9,6 @@ class JuliaWidget(FractalWidget):
     def __init__(self, parent=None, width=600, height=800, c=complex(-.5,-.5)):
         super().__init__(parent, width, height)
         self.c = c
-        self.julia = self.generate()
 
     def generate(self):
         scale_width = 2 / (self.zoom * self.width)

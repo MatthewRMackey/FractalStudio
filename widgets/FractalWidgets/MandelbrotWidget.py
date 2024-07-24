@@ -8,9 +8,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class MandelbrotWidget(FractalWidget):
     def __init__(self, parent=None, width=600, height=800):
         super().__init__(parent, width, height)
-        self.mandelbrot = self.generate()
         
     def generate(self):
+        
         scale_width = 2 / (self.zoom * self.width)
         scale_height = 2 / (self.zoom * self.height)
         r_range = (self.center[0] - self.width / 2 * scale_width, 
@@ -46,5 +46,5 @@ class MandelbrotWidget(FractalWidget):
         # nu = torch.log(log_zn / torch.log(torch.tensor(2.0))) / torch.log(torch.tensor(2.0))
         # smooth_iter = i + 1 - nu
         # escape_depth = torch.where(escaped, smooth_iter, torch.tensor(depth, dtype=torch.float32))
-
+        
         return escape_depth.cpu().tolist()
