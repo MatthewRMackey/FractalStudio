@@ -48,18 +48,7 @@ class FractalWidget(QWidget, metaclass=QtABCMeta):
             self.render_timer.start(0)  # Start immediately
 
     def progressiveRender(self):
-        scale_width = 2 / (self.zoom * self.width)
-        scale_height = 2 / (self.zoom * self.height)
-        x_min = self.center[0] - self.width / 2 * scale_width
-        x_max = self.center[0] + self.width / 2 * scale_width
-        y_min = self.center[1] - self.height / 2 * scale_height
-        y_max = self.center[1] + self.height / 2 * scale_height
-
-        escape_depths = self.generate(
-            (x_min, x_max), (y_min, y_max), 
-            self.current_resolution[0], self.current_resolution[1], 
-            self.depth, self.power
-        )
+        escape_depths = self.generate()
 
         self.updateImage(escape_depths)
         self.update()

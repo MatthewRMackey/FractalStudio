@@ -1,16 +1,13 @@
 import sys
+import os
 
 import numpy as np
 import cv2
-import os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QLabel, QSlider
-from PyQt5.QtGui import QImage, QPixmap, QPalette, QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout
 
 from widgets.ConfigWidget import ConfigWidget
 from widgets.FractalWidgets.MandelbrotWidget import MandelbrotWidget
 from widgets.FractalWidgets.JuliaWidget import JuliaWidget
-from util.FractalColorMap import FractalColorMap
 
 FRACTAL_TYPES = {
     'Mandelbrot' : 'M',
@@ -94,6 +91,7 @@ class MainWindow(QMainWindow):
         display_panel.power = float(config_panel.power_entry.line_edit.text())
         display_panel.color_map.map_name = config_panel.col_map_dropdown.get_current_selection()
         display_panel.color_map.color_map = display_panel.color_map.build_color_map()
+        #TODO This needs to be changed to update somehow
         display_panel.startProgressiveRender()
 
     def on_reset_button_click(self):
@@ -110,42 +108,20 @@ class MainWindow(QMainWindow):
     
     def on_save_button_click(self):
 
-        # Calculate function params
-        display_panel = self.display_panel
-        scale_width = 2 / (display_panel.zoom * display_panel.width)
-        scale_height = 2 / (display_panel.zoom * display_panel.height)
-        x_min = display_panel.center[0] - display_panel.width / 2 * scale_width
-        x_max = display_panel.center[0] + display_panel.width / 2 * scale_width
-        y_min = display_panel.center[1] - display_panel.height / 2 * scale_height
-        y_max = display_panel.center[1] + display_panel.height / 2 * scale_height
-
-        # RGB 2D map
-        escape_depth = [[]]
-        if self.f_type == "Mandelbrot":
-            escape_depths = display_panel.generate(
-                (x_min, x_max), (y_min, y_max), 
-                display_panel.current_resolution[0], display_panel.current_resolution[1], 
-                display_panel.depth, display_panel.power
-            )
-        elif self.f_type == "Julia":
-            escape_depths = display_panel.generate(
-                (x_min, x_max), (y_min, y_max), 
-                display_panel.current_resolution[0], display_panel.current_resolution[1], 
-                display_panel.depth, display_panel.power
-            )
+        escape_depths = self.display_panel.generate()
 
         # OpenCV uses BGR format, so convert RGB to BGR
         escape_depths = np.array(escape_depths)
-        colored_points = display_panel.color_map.apply_colormap(escape_depths).astype(np.uint8)
+        colored_points = self.display_panel.color_map.apply_colormap(escape_depths).astype(np.uint8)
         bgr_array = cv2.cvtColor(colored_points, cv2.COLOR_RGB2BGR)
         
-        if self.f_type == "Mandelbrot":
+        if FRACTAL_TYPES[self.f_type] == "M":
             # Count existing files and save
             os.makedirs("./imgs/mandelbrot/", exist_ok=True)
             existing_files = len([f for f in os.listdir("./imgs/mandelbrot/") if f.startswith('output_image_') and f.endswith('.png')])
             filename = f'./imgs/mandelbrot/output_image_{existing_files}.png'
             cv2.imwrite(filename, bgr_array)
-        elif self.f_type == "Julia":
+        elif FRACTAL_TYPES[self.f_type] == "J":
             # Count existing files and save
             os.makedirs("./imgs/julia/", exist_ok=True)
             existing_files = len([f for f in os.listdir("./imgs/julia/") if f.startswith('output_image_') and f.endswith('.png')])

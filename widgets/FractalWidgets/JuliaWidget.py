@@ -9,9 +9,18 @@ class JuliaWidget(FractalWidget):
     def __init__(self, parent=None, width=600, height=800, c=complex(-.5,-.5)):
         super().__init__(parent, width, height)
         self.c = c
-        self.julia = self.generate((-2,-2), (-2, 2), self.width, self.height, self.depth, self.power)
+        self.julia = self.generate()
 
-    def generate(self, r_range: tuple, i_range: tuple, r_sgmts: int, i_sgmts: int, depth: int, power: float):
+    def generate(self):
+        scale_width = 2 / (self.zoom * self.width)
+        scale_height = 2 / (self.zoom * self.height)
+        r_range = (self.center[0] - self.width / 2 * scale_width, 
+                   self.center[0] + self.width / 2 * scale_width)
+        i_range = (self.center[1] - self.height / 2 * scale_height,
+                   self.center[1] + self.height / 2 * scale_height)
+        r_sgmts = self.current_resolution[0]
+        i_sgmts = self.current_resolution[1]
+
         # Generate a 2D grid of complex numbers for initial z values
         x = torch.linspace(r_range[0], r_range[1], r_sgmts, dtype=torch.float32)
         y = torch.linspace(i_range[0], i_range[1], i_sgmts, dtype=torch.float32)
@@ -28,8 +37,8 @@ class JuliaWidget(FractalWidget):
         escape_depth = torch.zeros_like(x, dtype=torch.float32, device='cuda')
         escaped = torch.zeros_like(x, dtype=torch.bool, device='cuda')
 
-        for i in range(depth):
-            z = z ** power + c
+        for i in range(self.depth):
+            z = z ** self.power + c
             escaped = torch.abs(z) > 2
 
             newly_escaped = escaped & (escape_depth == 0)
